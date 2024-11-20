@@ -1,4 +1,6 @@
-# Document RAG API
+# Document RAG with Lucene + Ollama in a Container.
+
+![RAGs in a Box](docs/rags_in_a_box.png)
 
 ## Overview
 
