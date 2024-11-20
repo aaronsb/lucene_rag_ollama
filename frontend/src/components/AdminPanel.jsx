@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiRefreshCw, FiDatabase, FiSearch } from 'react-icons/fi';
+import { FiRefreshCw, FiDatabase, FiSearch, FiSettings } from 'react-icons/fi';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333';
@@ -10,6 +10,11 @@ function AdminPanel({ onReindex }) {
   const [model, setModel] = useState(null);
   const [numResults, setNumResults] = useState(3);
   const [updating, setUpdating] = useState(false);
+  const [llmConfig, setLLMConfig] = useState({
+    temperature: 0.1,
+    num_ctx: 128000,
+    repeat_penalty: 1.1
+  });
 
   const handleReindex = async () => {
     if (!window.confirm('Are you sure you want to delete the index and reindex all documents?')) {
@@ -55,6 +60,15 @@ function AdminPanel({ onReindex }) {
     }
   };
 
+  const fetchLLMConfig = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/llm-config`);
+      setLLMConfig(response.data);
+    } catch (error) {
+      console.error('Error fetching LLM config:', error);
+    }
+  };
+
   const updateSearchConfig = async (value) => {
     setUpdating(true);
     try {
@@ -68,6 +82,17 @@ function AdminPanel({ onReindex }) {
     setUpdating(false);
   };
 
+  const updateLLMConfig = async (newConfig) => {
+    setUpdating(true);
+    try {
+      await axios.post(`${API_URL}/llm-config`, newConfig);
+      setLLMConfig(newConfig);
+    } catch (error) {
+      console.error('Error updating LLM config:', error);
+    }
+    setUpdating(false);
+  };
+
   const handleNumResultsChange = (e) => {
     const value = parseInt(e.target.value);
     if (value > 0) {
@@ -75,11 +100,20 @@ function AdminPanel({ onReindex }) {
     }
   };
 
-  // Fetch stats, model info, and search config on mount
+  const handleLLMConfigChange = (field, value) => {
+    const parsedValue = field === 'num_ctx' ? parseInt(value) : parseFloat(value);
+    if (!isNaN(parsedValue)) {
+      const newConfig = { ...llmConfig, [field]: parsedValue };
+      updateLLMConfig(newConfig);
+    }
+  };
+
+  // Fetch stats, model info, search config, and LLM config on mount
   React.useEffect(() => {
     fetchStats();
     fetchModel();
     fetchSearchConfig();
+    fetchLLMConfig();
   }, []);
 
   return (
@@ -125,6 +159,57 @@ function AdminPanel({ onReindex }) {
             disabled={updating}
             className="w-16 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center gap-1 text-gray-600 mb-2">
+            <FiSettings className="w-3 h-3" />
+            <span className="font-semibold">LLM Parameters</span>
+          </div>
+          
+          <div className="flex items-center gap-2 text-gray-600">
+            <label htmlFor="temperature" className="text-sm w-32">Temperature:</label>
+            <input
+              id="temperature"
+              type="number"
+              min="0"
+              max="1"
+              step="0.1"
+              value={llmConfig.temperature}
+              onChange={(e) => handleLLMConfigChange('temperature', e.target.value)}
+              disabled={updating}
+              className="w-20 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 text-gray-600">
+            <label htmlFor="num_ctx" className="text-sm w-32">Context Window:</label>
+            <input
+              id="num_ctx"
+              type="number"
+              min="1024"
+              step="1024"
+              value={llmConfig.num_ctx}
+              onChange={(e) => handleLLMConfigChange('num_ctx', e.target.value)}
+              disabled={updating}
+              className="w-24 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 text-gray-600">
+            <label htmlFor="repeat_penalty" className="text-sm w-32">Repeat Penalty:</label>
+            <input
+              id="repeat_penalty"
+              type="number"
+              min="1"
+              max="2"
+              step="0.1"
+              value={llmConfig.repeat_penalty}
+              onChange={(e) => handleLLMConfigChange('repeat_penalty', e.target.value)}
+              disabled={updating}
+              className="w-20 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
         </div>
       </div>
     </div>

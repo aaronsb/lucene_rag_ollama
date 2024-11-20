@@ -65,6 +65,11 @@ class ModelInfo(BaseModel):
 class SearchConfig(BaseModel):
     num_results: int
 
+class LLMConfig(BaseModel):
+    temperature: float
+    num_ctx: int
+    repeat_penalty: float
+
 class LuceneRAG:
     def __init__(self, index_dir="index"):
         self.index_dir = index_dir
@@ -427,6 +432,20 @@ Answer:"""
             print(f"Error reindexing: {str(e)}")
             raise
 
+    def get_llm_config(self) -> LLMConfig:
+        """Get current LLM configuration."""
+        return LLMConfig(
+            temperature=self.llm.temperature,
+            num_ctx=self.llm.num_ctx,
+            repeat_penalty=self.llm.repeat_penalty
+        )
+
+    def update_llm_config(self, config: LLMConfig):
+        """Update LLM configuration."""
+        self.llm.temperature = config.temperature
+        self.llm.num_ctx = config.num_ctx
+        self.llm.repeat_penalty = config.repeat_penalty
+
     def __del__(self):
         """Cleanup resources."""
         try:
@@ -542,6 +561,23 @@ async def update_search_config(config: SearchConfig):
         return {"message": "Search configuration updated successfully"}
     except Exception as e:
         print(f"Error in update_search_config endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/llm-config")
+async def get_llm_config():
+    try:
+        return rag.get_llm_config()
+    except Exception as e:
+        print(f"Error in get_llm_config endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/llm-config")
+async def update_llm_config(config: LLMConfig):
+    try:
+        rag.update_llm_config(config)
+        return {"message": "LLM configuration updated successfully"}
+    except Exception as e:
+        print(f"Error in update_llm_config endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
