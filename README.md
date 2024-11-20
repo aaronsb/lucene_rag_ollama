@@ -231,7 +231,7 @@ curl -X POST http://localhost:3333/query \
 Backend (`main.py`):
 - Adjust the number of retrieved documents (n parameter in search method)
 - Modify the prompt template
-- Change the Ollama model (default is llama2)
+- Change the Ollama model (default is llama3.2-vision with 128k context window)
 - Add additional API endpoints or functionality
 - Customize source attribution format
 - Modify folder structure handling
