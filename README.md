@@ -49,7 +49,8 @@ Frontend:
 - Docker
 - Docker Compose
 - Ollama (running locally)
-- llama2-3.2-vision model installed in Ollama (128k context window version)
+- llama3.2-vision model installed in Ollama (128k context window version)
+- Yes its a vision model, but it works good enough for now.
 
 ## Setup and Running
 
