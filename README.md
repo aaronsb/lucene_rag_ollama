@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is my *Faux-Stack* application combining Apache Lucene for document indexing with a local Ollama LLM for Retrieval-Augmented Generation (RAG). The system includes a modern React frontend and runs entirely locally using Docker containers. It provides a seamless interface for document management, querying, and interactive chat-based document retrieval.
+This is my *Faux-Stack* application combining Apache Lucene for document indexing with a local Ollama LLM for Retrieval-Augmented Generation (RAG). The system includes a modern React frontend and runs entirely locally using Docker containers. It provides an interface for document management, querying, and interactive chat-based document retrieval.
 
 ## Collaboration with Cline
 
