@@ -1,6 +1,22 @@
 # Document RAG API
 
-A full-stack application that combines Apache Lucene for document indexing with a local Ollama LLM for Retrieval-Augmented Generation (RAG). The system includes a modern React frontend and runs entirely locally using Docker containers.
+## Overview
+
+This full-stack application combines Apache Lucene for document indexing with a local Ollama LLM for Retrieval-Augmented Generation (RAG). The system includes a modern React frontend and runs entirely locally using Docker containers. It provides a seamless interface for document management, querying, and interactive chat-based document retrieval.
+
+## Collaboration with Cline
+
+This project is developed in collaboration with [Cline](https://github.com/cline/cline), an exceptional AI assistant code editor. Cline has been instrumental in enhancing the development process, providing intelligent code suggestions, and ensuring best practices are followed throughout the project.
+
+## Goals
+
+The primary goals of this project are:
+- To gain a deeper understanding of RAG and graph search results.
+- To improve skills in creating and managing Docker containers.
+- To practice writing clean, maintainable code.
+- To enhance documentation skills and maintain comprehensive project documentation.
+
+This project is a work in progress, aimed at continuous learning and improvement in full-stack development and AI integration.
 
 ## Features
 
