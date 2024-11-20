@@ -6,7 +6,7 @@ A full-stack application that combines Apache Lucene for document indexing with 
 
 Backend:
 - REST API endpoints for document management and querying
-- Document indexing using Apache Lucene
+- Document indexing using Apache Lucene with BM25 similarity scoring
 - Local LLM inference using Ollama
 - RAG implementation combining Lucene search with LLM generation
 - Containerized setup for isolation and reproducibility
@@ -31,6 +31,7 @@ Frontend:
 - Docker
 - Docker Compose
 - Ollama (running locally)
+- llama2-3.2-vision model installed in Ollama (128k context window version)
 
 ## Setup and Running
 
@@ -71,6 +72,15 @@ The services will:
    - Questions are answered using the context from your uploaded documents
    - Source documents are listed below each response
    - Click on source document names to preview their content
+
+4. **Admin Panel**:
+   - View current model and index statistics
+   - Configure search parameters:
+     - Number of results: Controls how many documents are retrieved for context
+   - Configure LLM parameters:
+     - Temperature (0-1): Controls response randomness. Lower values make responses more focused and deterministic
+     - Context Window (1024-128000): Maximum tokens for context. Higher values allow more document context
+     - Repeat Penalty (1-2): Controls repetition in responses. Higher values reduce repetition
 
 ## API Endpoints
 
@@ -139,13 +149,13 @@ Response:
 
 2. **Document Management**: 
    - Documents are added, listed, and deleted through REST endpoints or web interface
-   - Each document is indexed using Apache Lucene for efficient retrieval
+   - Each document is indexed using Apache Lucene with BM25 similarity scoring for optimal retrieval
    - Documents maintain their folder structure in the index
    - Frontend provides markdown rendering and organization
 
 3. **RAG Process**:
    - When a question is received through the query endpoint or chat interface
-   - Lucene searches the index to find the most relevant documents
+   - Lucene searches the index using BM25 scoring to find the most relevant documents
    - Retrieved documents are used as context for the Ollama LLM
    - LLM generates an informed response based on the context
    - Source documents are tracked and returned with the response
@@ -186,6 +196,7 @@ Backend:
 - Uses host network mode to access Ollama service
 - Tracks and returns source documents for responses
 - Maintains hierarchical document organization
+- Uses BM25 similarity scoring for improved search relevance
 
 Frontend:
 - Built with React and Vite for modern development experience
@@ -235,6 +246,7 @@ Backend (`main.py`):
 - Add additional API endpoints or functionality
 - Customize source attribution format
 - Modify folder structure handling
+- Adjust BM25 similarity parameters for search tuning
 
 Frontend (`frontend/src/App.jsx`, `frontend/src/components/FolderTree.jsx`):
 - Customize the UI theme in Tailwind configuration
