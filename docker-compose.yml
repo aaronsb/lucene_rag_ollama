@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  rag-app:
+    build: .
+    volumes:
+      - ./:/app
+      - lucene_index:/app/index  # Named volume for Lucene index
+    network_mode: "host"  # To access Ollama running on host
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "3333:3333"  # FastAPI service port
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # React app port
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:3333  # Backend API URL
+    depends_on:
+      - rag-app
+
+volumes:
+  lucene_index:  # Define the named volume for Lucene index
